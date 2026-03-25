@@ -1,0 +1,69 @@
+[
+  {
+    "id": "idp-keycloak",
+    "name": "Keycloak",
+    "type": "idp",
+    "description": "Red Hat Keycloak identity provider. SSO, MFA, and self-hosted user management.",
+    "longDescription": "## Keycloak Identity Provider\n\nConnect Kleff to your Keycloak realm for enterprise-grade identity management.\n\n### Features\n- Direct Access Grant (headless login)\n- User registration via Keycloak Admin REST API\n- RS256 JWT verification via JWKS endpoint\n- Multi-realm support\n\n### Setup\n1. Create a Keycloak realm for Kleff (e.g. `kleff`).\n2. Create a confidential client with **Direct access grants** enabled.\n3. Create an admin service account or use the master realm admin credentials.\n4. Fill in the config fields below and click Install.",
+    "tags": [
+      "self-hosted",
+      "sso",
+      "enterprise",
+      "open-source"
+    ],
+    "author": "Kleff",
+    "repo": "https://github.com/kleff/idp-keycloak",
+    "docs": "https://docs.kleff.io/plugins/idp-keycloak",
+    "image": "ghcr.io/kleff/idp-keycloak",
+    "version": "1.0.0",
+    "minKleffVersion": "0.5.0",
+    "license": "MIT",
+    "verified": true,
+    "config": [
+      {
+        "key": "KEYCLOAK_URL",
+        "label": "Keycloak URL",
+        "description": "Root URL of your Keycloak server, e.g. https://keycloak.example.com",
+        "type": "url",
+        "required": true
+      },
+      {
+        "key": "KEYCLOAK_REALM",
+        "label": "Realm",
+        "description": "Keycloak realm name, e.g. kleff",
+        "type": "string",
+        "required": true,
+        "default": "master"
+      },
+      {
+        "key": "KEYCLOAK_CLIENT_ID",
+        "label": "Client ID",
+        "description": "Confidential client with Direct Access Grants enabled.",
+        "type": "string",
+        "required": true,
+        "default": "kleff-panel"
+      },
+      {
+        "key": "KEYCLOAK_CLIENT_SECRET",
+        "label": "Client Secret",
+        "description": "Client secret for the above client.",
+        "type": "secret",
+        "required": false
+      },
+      {
+        "key": "KEYCLOAK_ADMIN_USER",
+        "label": "Admin Username",
+        "description": "Keycloak admin username (used for user registration).",
+        "type": "string",
+        "required": false,
+        "default": "admin"
+      },
+      {
+        "key": "KEYCLOAK_ADMIN_PASSWORD",
+        "label": "Admin Password",
+        "type": "secret",
+        "required": false
+      }
+    ]
+  }
+]
