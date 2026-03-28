@@ -29,7 +29,16 @@
         "label": "Keycloak URL",
         "description": "Root URL of your Keycloak server, e.g. https://keycloak.example.com",
         "type": "url",
-        "required": true
+        "required": true,
+        "default": "http://keycloak:8080"
+      },
+      {
+        "key": "KEYCLOAK_PUBLIC_URL",
+        "label": "Keycloak Public URL",
+        "description": "Browser-reachable URL for OIDC redirects. Only needed if different from Keycloak URL (e.g. when Keycloak runs behind Docker).",
+        "type": "url",
+        "required": false,
+        "default": "http://localhost:8180"
       },
       {
         "key": "KEYCLOAK_REALM",
@@ -37,7 +46,7 @@
         "description": "Keycloak realm name, e.g. kleff",
         "type": "string",
         "required": true,
-        "default": "master"
+        "default": "kleff"
       },
       {
         "key": "KEYCLOAK_CLIENT_ID",
@@ -66,7 +75,8 @@
         "key": "KEYCLOAK_ADMIN_PASSWORD",
         "label": "Admin Password",
         "type": "secret",
-        "required": false
+        "required": false,
+        "default": "admin"
       },
       {
         "key": "AUTH_MODE",
