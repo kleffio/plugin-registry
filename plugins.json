@@ -15,7 +15,7 @@
     "repo": "https://github.com/kleffio/plugins/idp-keycloak",
     "docs": "https://docs.kleff.io/plugins/idp-keycloak",
     "image": "ghcr.io/kleffio/idp-keycloak",
-    "version": "1.0.0",
+    "version": "0.0.1-rc1",
     "minKleffVersion": "0.5.0",
     "license": "MIT",
     "verified": true,
@@ -73,7 +73,10 @@
         "label": "Login Mode",
         "description": "headless — users log in via the Kleff panel form (uses Keycloak Direct Access Grants). redirect — users are redirected to the Keycloak login page via OIDC Authorization Code flow.",
         "type": "select",
-        "options": ["headless", "redirect"],
+        "options": [
+          "headless",
+          "redirect"
+        ],
         "required": false,
         "default": "headless"
       }
