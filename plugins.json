@@ -83,7 +83,10 @@
         "label": "Login Mode",
         "description": "headless — users log in via the Kleff panel form (uses Keycloak Direct Access Grants). redirect — users are redirected to the Keycloak login page via OIDC Authorization Code flow.",
         "type": "select",
-        "options": ["headless", "redirect"],
+        "options": [
+          "headless",
+          "redirect"
+        ],
         "required": false,
         "default": "headless"
       }
