@@ -1,5 +1,56 @@
 [
   {
+    "id": "idp-oidc",
+    "name": "Generic OIDC",
+    "type": "idp",
+    "description": "Connect any OIDC-compatible identity provider — Authentik, Ory, Okta, Auth0, Azure AD, and more.",
+    "longDescription": "## Generic OIDC Identity Provider\n\nConnect Kleff to any identity provider that supports OpenID Connect.\n\n### Compatible providers\n- **Authentik** — set issuer to your application's OIDC provider URL\n- **Ory Hydra / Kratos** — set issuer to your Hydra issuer URL\n- **Okta** — set issuer to `https://your-org.okta.com/oauth2/default`\n- **Auth0** — set issuer to `https://your-tenant.auth0.com/`\n- **Azure AD** — set issuer to `https://login.microsoftonline.com/{tenant}/v2.0`\n- **Google** — set issuer to `https://accounts.google.com`\n- Any other OIDC-compliant provider\n\n### Login modes\n- **redirect** *(recommended)* — users are sent to your IDP's login page. Works with every provider.\n- **headless** — Kleff shows its own login form and forwards credentials via Resource Owner Password Credentials (ROPC). Only enable if your provider supports the ROPC grant.\n\n### User registration\nThis plugin does not create users — manage accounts through your identity provider's admin interface.\n\n### Setup\n1. Create an OIDC application / client in your identity provider.\n2. Set the redirect URI to `https://your-kleff-domain/auth/callback`.\n3. Copy the issuer URL, client ID, and client secret below.",
+    "tags": ["oidc", "oauth2", "sso", "enterprise", "external"],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/plugins/idp-oidc",
+    "docs": "https://docs.kleff.io/plugins/idp-oidc",
+    "image": "ghcr.io/kleffio/idp-oidc",
+    "version": "1.0.0",
+    "minKleffVersion": "0.5.0",
+    "license": "MIT",
+    "verified": true,
+    "capabilities": [
+      "identity.provider"
+    ],
+    "config": [
+      {
+        "key": "OIDC_ISSUER",
+        "label": "Issuer URL",
+        "description": "Your identity provider's OIDC issuer URL. The plugin fetches configuration from {issuer}/.well-known/openid-configuration.",
+        "type": "url",
+        "required": true
+      },
+      {
+        "key": "OIDC_CLIENT_ID",
+        "label": "Client ID",
+        "description": "The client ID of your OIDC application.",
+        "type": "string",
+        "required": true
+      },
+      {
+        "key": "OIDC_CLIENT_SECRET",
+        "label": "Client Secret",
+        "description": "The client secret. Leave blank for public clients.",
+        "type": "secret",
+        "required": false
+      },
+      {
+        "key": "AUTH_MODE",
+        "label": "Login Mode",
+        "description": "redirect — users log in via your IDP's own login page (recommended). headless — Kleff shows its own form and forwards credentials via ROPC (only enable if your IDP supports it).",
+        "type": "select",
+        "options": ["redirect", "headless"],
+        "required": false,
+        "default": "redirect"
+      }
+    ]
+  },
+  {
     "id": "idp-keycloak",
     "name": "Keycloak",
     "type": "idp",
@@ -27,68 +78,42 @@
       {
         "key": "KEYCLOAK_URL",
         "label": "Keycloak URL",
-        "description": "Root URL of your Keycloak server, e.g. https://keycloak.example.com",
+        "description": "Leave blank to use the bundled Keycloak. Set this to connect to your own existing Keycloak server instead.",
         "type": "url",
-        "required": true,
-        "default": "http://keycloak:8080"
-      },
-      {
-        "key": "KEYCLOAK_PUBLIC_URL",
-        "label": "Keycloak Public URL",
-        "description": "Browser-reachable URL for OIDC redirects. Only needed if different from Keycloak URL (e.g. when Keycloak runs behind Docker).",
-        "type": "url",
-        "required": false,
-        "default": "http://localhost:8180"
+        "required": false
       },
       {
         "key": "KEYCLOAK_REALM",
         "label": "Realm",
-        "description": "Keycloak realm name, e.g. kleff",
+        "description": "Realm name on your Keycloak server. Only needed when connecting to an external Keycloak.",
         "type": "string",
-        "required": true,
-        "default": "kleff"
-      },
-      {
-        "key": "KEYCLOAK_CLIENT_ID",
-        "label": "Client ID",
-        "description": "Confidential client with Direct Access Grants enabled.",
-        "type": "string",
-        "required": true,
-        "default": "kleff-panel"
-      },
-      {
-        "key": "KEYCLOAK_CLIENT_SECRET",
-        "label": "Client Secret",
-        "description": "Client secret for the above client.",
-        "type": "secret",
         "required": false
-      },
-      {
-        "key": "KEYCLOAK_ADMIN_USER",
-        "label": "Admin Username",
-        "description": "Keycloak admin username (used for user registration).",
-        "type": "string",
-        "required": false,
-        "default": "admin"
       },
       {
         "key": "KEYCLOAK_ADMIN_PASSWORD",
         "label": "Admin Password",
+        "description": "Admin password for your Keycloak server. Only needed when connecting to an external Keycloak.",
         "type": "secret",
-        "required": false,
-        "default": "admin"
-      },
+        "required": false
+      }
+    ],
+    "companions": [
       {
-        "key": "AUTH_MODE",
-        "label": "Login Mode",
-        "description": "headless — users log in via the Kleff panel form (uses Keycloak Direct Access Grants). redirect — users are redirected to the Keycloak login page via OIDC Authorization Code flow.",
-        "type": "select",
-        "options": [
-          "headless",
-          "redirect"
+        "id": "keycloak",
+        "image": "quay.io/keycloak/keycloak:26.1",
+        "command": ["start-dev"],
+        "env": {
+          "KC_BOOTSTRAP_ADMIN_USERNAME": "admin",
+          "KC_BOOTSTRAP_ADMIN_PASSWORD": "admin",
+          "KC_HTTP_PORT": "8080"
+        },
+        "volumes": [
+          {
+            "name": "kleff-keycloak-data",
+            "target": "/opt/keycloak/data"
+          }
         ],
-        "required": false,
-        "default": "headless"
+        "skipIfEnv": "KEYCLOAK_URL"
       }
     ]
   }
