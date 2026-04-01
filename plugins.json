@@ -5,7 +5,13 @@
     "type": "idp",
     "description": "Connect any OIDC-compatible identity provider — Authentik, Ory, Okta, Auth0, Azure AD, and more.",
     "longDescription": "## Generic OIDC Identity Provider\n\nConnect Kleff to any identity provider that supports OpenID Connect.\n\n### Compatible providers\n- **Authentik** — set issuer to your application's OIDC provider URL\n- **Ory Hydra / Kratos** — set issuer to your Hydra issuer URL\n- **Okta** — set issuer to `https://your-org.okta.com/oauth2/default`\n- **Auth0** — set issuer to `https://your-tenant.auth0.com/`\n- **Azure AD** — set issuer to `https://login.microsoftonline.com/{tenant}/v2.0`\n- **Google** — set issuer to `https://accounts.google.com`\n- Any other OIDC-compliant provider\n\n### Login modes\n- **redirect** *(recommended)* — users are sent to your IDP's login page. Works with every provider.\n- **headless** — Kleff shows its own login form and forwards credentials via Resource Owner Password Credentials (ROPC). Only enable if your provider supports the ROPC grant.\n\n### User registration\nThis plugin does not create users — manage accounts through your identity provider's admin interface.\n\n### Setup\n1. Create an OIDC application / client in your identity provider.\n2. Set the redirect URI to `https://your-kleff-domain/auth/callback`.\n3. Copy the issuer URL, client ID, and client secret below.",
-    "tags": ["oidc", "oauth2", "sso", "enterprise", "external"],
+    "tags": [
+      "oidc",
+      "oauth2",
+      "sso",
+      "enterprise",
+      "external"
+    ],
     "author": "Kleff",
     "repo": "https://github.com/kleffio/plugins/idp-oidc",
     "docs": "https://docs.kleff.io/plugins/idp-oidc",
@@ -44,7 +50,10 @@
         "label": "Login Mode",
         "description": "redirect — users log in via your IDP's own login page (recommended). headless — Kleff shows its own form and forwards credentials via ROPC (only enable if your IDP supports it).",
         "type": "select",
-        "options": ["redirect", "headless"],
+        "options": [
+          "redirect",
+          "headless"
+        ],
         "required": false,
         "default": "redirect"
       }
@@ -66,7 +75,7 @@
     "repo": "https://github.com/kleffio/plugins/idp-keycloak",
     "docs": "https://docs.kleff.io/plugins/idp-keycloak",
     "image": "ghcr.io/kleffio/idp-keycloak",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "minKleffVersion": "0.5.0",
     "license": "MIT",
     "verified": true,
@@ -111,7 +120,9 @@
       {
         "id": "keycloak",
         "image": "quay.io/keycloak/keycloak:26.1",
-        "command": ["start-dev"],
+        "command": [
+          "start-dev"
+        ],
         "env": {
           "KC_BOOTSTRAP_ADMIN_USERNAME": "admin",
           "KC_BOOTSTRAP_ADMIN_PASSWORD": "admin",
