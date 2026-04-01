@@ -96,24 +96,16 @@
         "label": "Realm",
         "description": "Realm name on your Keycloak server. Only needed when connecting to an external Keycloak.",
         "type": "string",
-<<<<<<< HEAD
-        "required": false
-=======
         "required": false,
         "default": "kleff"
->>>>>>> 77c8fc760919c1d2ed66d54600fab5b3edd5c82a
       },
       {
         "key": "KEYCLOAK_ADMIN_PASSWORD",
         "label": "Admin Password",
         "description": "Admin password for your Keycloak server. Only needed when connecting to an external Keycloak.",
         "type": "secret",
-<<<<<<< HEAD
-        "required": false
-=======
         "required": false,
         "default": "admin"
->>>>>>> 77c8fc760919c1d2ed66d54600fab5b3edd5c82a
       }
     ],
     "companions": [
