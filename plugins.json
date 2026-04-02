@@ -126,7 +126,8 @@
             "target": "/opt/keycloak/data"
           }
         ],
-        "skipIfEnv": "KEYCLOAK_URL"
+        "skipIfEnv": "KEYCLOAK_URL",
+        "internalAddr": "http://keycloak:8080"
       }
     ]
   }
