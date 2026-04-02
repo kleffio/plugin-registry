@@ -36,6 +36,7 @@ When appending your plugin to `plugins.json`, please use the following structure
   "minKleffVersion": "0.5.0",
   "license": "MIT",
   "verified": false,
+  "capabilities": ["identity.provider"],
   "config": [
     {
       "key": "API_TOKEN",
@@ -43,6 +44,14 @@ When appending your plugin to `plugins.json`, please use the following structure
       "description": "Your access token for the external service.",
       "type": "secret",
       "required": true
+    }
+  ],
+  "companions": [
+    {
+      "id": "my-service",
+      "image": "my-service:latest",
+      "env": { "PORT": "8080" },
+      "skipIfEnv": "EXTERNAL_SERVICE_URL"
     }
   ]
 }

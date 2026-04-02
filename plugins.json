@@ -75,7 +75,7 @@
     "repo": "https://github.com/kleffio/plugins/idp-keycloak",
     "docs": "https://docs.kleff.io/plugins/idp-keycloak",
     "image": "ghcr.io/kleffio/idp-keycloak",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "minKleffVersion": "0.5.0",
     "license": "MIT",
     "verified": true,
@@ -92,20 +92,59 @@
         "required": false
       },
       {
+        "key": "KEYCLOAK_PUBLIC_URL",
+        "label": "Public URL",
+        "description": "Browser-reachable Keycloak URL. Only needed if internal and public URLs differ (e.g. behind a reverse proxy).",
+        "type": "url",
+        "required": false
+      },
+      {
         "key": "KEYCLOAK_REALM",
         "label": "Realm",
-        "description": "Realm name on your Keycloak server. Only needed when connecting to an external Keycloak.",
+        "description": "Keycloak realm name.",
         "type": "string",
         "required": false,
         "default": "kleff"
       },
       {
+        "key": "KEYCLOAK_CLIENT_ID",
+        "label": "Client ID",
+        "description": "Client ID with Direct Access Grants enabled.",
+        "type": "string",
+        "required": false,
+        "default": "kleff-panel"
+      },
+      {
+        "key": "KEYCLOAK_CLIENT_SECRET",
+        "label": "Client Secret",
+        "description": "Client secret for confidential clients. Leave blank for public clients.",
+        "type": "secret",
+        "required": false
+      },
+      {
+        "key": "KEYCLOAK_ADMIN_USER",
+        "label": "Admin Username",
+        "description": "Admin account used for user registration via the Keycloak Admin API.",
+        "type": "string",
+        "required": false,
+        "default": "admin"
+      },
+      {
         "key": "KEYCLOAK_ADMIN_PASSWORD",
         "label": "Admin Password",
-        "description": "Admin password for your Keycloak server. Only needed when connecting to an external Keycloak.",
+        "description": "Admin password for user registration.",
         "type": "secret",
         "required": false,
         "default": "admin"
+      },
+      {
+        "key": "AUTH_MODE",
+        "label": "Login Mode",
+        "description": "headless — credentials form in Kleff panel. redirect — redirect to Keycloak login page.",
+        "type": "select",
+        "options": ["headless", "redirect"],
+        "required": false,
+        "default": "headless"
       }
     ],
     "companions": [
@@ -130,4 +169,4 @@
       }
     ]
   }
-]
+]
