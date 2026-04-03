@@ -80,7 +80,7 @@
     "repo": "https://github.com/kleffio/plugins/idp-keycloak",
     "docs": "https://docs.kleff.io/plugins/idp-keycloak",
     "image": "ghcr.io/kleffio/idp-keycloak",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "minKleffVersion": "0.5.0",
     "license": "MIT",
     "verified": true,
@@ -131,7 +131,8 @@
             "target": "/opt/keycloak/data"
           }
         ],
-        "skipIfEnv": "KEYCLOAK_URL"
+        "skipIfEnv": "KEYCLOAK_URL",
+        "internalAddr": "http://keycloak:8080"
       }
     ]
   }
