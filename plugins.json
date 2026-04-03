@@ -10,7 +10,9 @@
       "oauth2",
       "sso",
       "enterprise",
-      "external"
+      "external",
+      "backend",
+      "identity"
     ],
     "author": "Kleff",
     "repo": "https://github.com/kleffio/plugins/idp-oidc",
@@ -69,7 +71,10 @@
       "self-hosted",
       "sso",
       "enterprise",
-      "open-source"
+      "open-source",
+      "frontend",
+      "backend",
+      "identity"
     ],
     "author": "Kleff",
     "repo": "https://github.com/kleffio/plugins/idp-keycloak",
