@@ -66,7 +66,7 @@
     "name": "Keycloak",
     "type": "idp",
     "description": "Red Hat Keycloak identity provider. SSO, MFA, and self-hosted user management.",
-    "longDescription": "## Keycloak Identity Provider\n\nConnect Kleff to your Keycloak realm for enterprise-grade identity management.\n\n### Features\n- Direct Access Grant (headless login)\n- User registration via Keycloak Admin REST API\n- RS256 JWT verification via JWKS endpoint\n- Multi-realm support\n\n### Setup\n1. Create a Keycloak realm for Kleff (e.g. `kleff`).\n2. Create a confidential client with **Direct access grants** enabled.\n3. Create an admin service account or use the master realm admin credentials.\n4. Fill in the config fields below and click Install.",
+    "longDescription": "## Keycloak Identity Provider\n\nKleff deploys and manages a Keycloak container automatically. No configuration required.\n\n### Features\n- Bundled Keycloak container (no external setup needed)\n- SSO and MFA via Keycloak\n- User registration via Keycloak Admin REST API\n- RS256 JWT verification via JWKS endpoint\n\n### Setup\nClick Install & Activate. Kleff will start Keycloak, configure the realm, and set up an admin user automatically.",
     "tags": [
       "self-hosted",
       "sso",
@@ -90,27 +90,21 @@
     ],
     "config": [
       {
-        "key": "KEYCLOAK_URL",
-        "label": "Keycloak URL",
-        "description": "Leave blank to use the bundled Keycloak. Set this to connect to your own existing Keycloak server instead.",
+        "key": "AUTH_MODE",
+        "label": "Login Mode",
+        "description": "redirect — users log in via Keycloak's own login page (recommended). headless — Kleff shows its own form and forwards credentials via ROPC.",
+        "type": "select",
+        "options": ["redirect", "headless"],
+        "required": false,
+        "default": "redirect"
+      },
+      {
+        "key": "KEYCLOAK_PUBLIC_URL",
+        "label": "Keycloak Public URL",
+        "description": "Browser-reachable URL for Keycloak. Required for redirect login mode. Defaults to http://localhost:8180 (the port Keycloak is exposed on).",
         "type": "url",
-        "required": false
-      },
-      {
-        "key": "KEYCLOAK_REALM",
-        "label": "Realm",
-        "description": "Realm name on your Keycloak server. Only needed when connecting to an external Keycloak.",
-        "type": "string",
         "required": false,
-        "default": "kleff"
-      },
-      {
-        "key": "KEYCLOAK_ADMIN_PASSWORD",
-        "label": "Admin Password",
-        "description": "Admin password for your Keycloak server. Only needed when connecting to an external Keycloak.",
-        "type": "secret",
-        "required": false,
-        "default": "admin"
+        "default": "http://localhost:8180"
       }
     ],
     "companions": [
@@ -125,6 +119,9 @@
           "KC_BOOTSTRAP_ADMIN_PASSWORD": "admin",
           "KC_HTTP_PORT": "8080"
         },
+        "ports": [
+          { "container": 8080, "host": 8180 }
+        ],
         "volumes": [
           {
             "name": "kleff-keycloak-data",
