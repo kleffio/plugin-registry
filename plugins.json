@@ -127,13 +127,9 @@
             "name": "kleff-keycloak-data",
             "target": "/opt/keycloak/data"
           }
-<<<<<<< HEAD
-        ]
-=======
         ],
         "skipIfEnv": "KEYCLOAK_URL",
         "internalAddr": "http://keycloak:8080"
->>>>>>> 9909b7393e817f6866a881c710003bc848ea42bc
       }
     ]
   }
