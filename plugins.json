@@ -45,7 +45,8 @@
         "label": "Client Secret",
         "description": "The client secret. Leave blank for public clients.",
         "type": "secret",
-        "required": false
+        "required": false,
+        "advanced": true
       },
       {
         "key": "AUTH_MODE",
@@ -104,6 +105,7 @@
         "description": "Browser-reachable URL for Keycloak. Required for redirect login mode. Defaults to http://localhost:8180 (the port Keycloak is exposed on).",
         "type": "url",
         "required": false,
+        "advanced": true,
         "default": "http://localhost:8180"
       }
     ],
