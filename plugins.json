@@ -81,7 +81,7 @@
     "repo": "https://github.com/kleffio/plugins/idp-keycloak",
     "docs": "https://docs.kleff.io/plugins/idp-keycloak",
     "image": "ghcr.io/kleffio/idp-keycloak",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "minKleffVersion": "0.5.0",
     "license": "MIT",
     "verified": true,
@@ -95,7 +95,10 @@
         "label": "Login Mode",
         "description": "redirect — users log in via Keycloak's own login page (recommended). headless — Kleff shows its own form and forwards credentials via ROPC.",
         "type": "select",
-        "options": ["redirect", "headless"],
+        "options": [
+          "redirect",
+          "headless"
+        ],
         "required": false,
         "default": "redirect"
       },
@@ -122,7 +125,10 @@
           "KC_HTTP_PORT": "8080"
         },
         "ports": [
-          { "container": 8080, "host": 8180 }
+          {
+            "container": 8080,
+            "host": 8180
+          }
         ],
         "volumes": [
           {
