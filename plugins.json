@@ -78,7 +78,7 @@
     "repo": "https://github.com/kleffio/components-plugin",
     "docs": "https://docs.kleff.io/plugins/components",
     "image": "ghcr.io/kleffio/plugin-components",
-    "version": "0.1.0",
+    "version": "1.0.1",
     "minKleffVersion": "0.5.0",
     "license": "MIT",
     "verified": true,
