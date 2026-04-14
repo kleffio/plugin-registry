@@ -63,6 +63,31 @@
     ]
   },
   {
+    "id": "kleff.components",
+    "name": "Component Showcase",
+    "type": "ui",
+    "description": "UI primitives and domain component showcase. Adds a Components page and sidebar nav item.",
+    "longDescription": "## Component Showcase\n\nAdds a **Components** page (`/p/components`) to the Kleff panel and a matching sidebar nav item.\n\nShowcases all Kleff UI primitives and domain components — buttons, badges, cards, charts, toasts, and more — useful for plugin development and design review.",
+    "tags": [
+      "ui",
+      "components",
+      "showcase",
+      "frontend"
+    ],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/components-plugin",
+    "docs": "https://docs.kleff.io/plugins/components",
+    "image": "ghcr.io/kleffio/plugin-components",
+    "version": "0.1.0",
+    "minKleffVersion": "0.5.0",
+    "license": "MIT",
+    "verified": true,
+    "capabilities": [
+      "ui.manifest"
+    ],
+    "config": []
+  },
+  {
     "id": "idp-keycloak",
     "name": "Keycloak",
     "type": "idp",
