@@ -63,7 +63,7 @@
     ]
   },
   {
-    "id": "kleff.components",
+    "id": "components-showcase",
     "name": "Component Showcase",
     "type": "ui",
     "description": "UI primitives and domain component showcase. Adds a Components page and sidebar nav item.",
