@@ -3,6 +3,7 @@
     "id": "idp-oidc",
     "name": "Generic OIDC",
     "type": "idp",
+    "tier": 2,
     "description": "Connect any OIDC-compatible identity provider — Authentik, Ory, Okta, Auth0, Azure AD, and more.",
     "longDescription": "## Generic OIDC Identity Provider\n\nConnect Kleff to any identity provider that supports OpenID Connect.\n\n### Compatible providers\n- **Authentik** — set issuer to your application's OIDC provider URL\n- **Ory Hydra / Kratos** — set issuer to your Hydra issuer URL\n- **Okta** — set issuer to `https://your-org.okta.com/oauth2/default`\n- **Auth0** — set issuer to `https://your-tenant.auth0.com/`\n- **Azure AD** — set issuer to `https://login.microsoftonline.com/{tenant}/v2.0`\n- **Google** — set issuer to `https://accounts.google.com`\n- Any other OIDC-compliant provider\n\n### Login modes\n- **redirect** *(recommended)* — users are sent to your IDP's login page. Works with every provider.\n- **headless** — Kleff shows its own login form and forwards credentials via Resource Owner Password Credentials (ROPC). Only enable if your provider supports the ROPC grant.\n\n### User registration\nThis plugin does not create users — manage accounts through your identity provider's admin interface.\n\n### Setup\n1. Create an OIDC application / client in your identity provider.\n2. Set the redirect URI to `https://your-kleff-domain/auth/callback`.\n3. Copy the issuer URL, client ID, and client secret below.",
     "tags": [
@@ -66,6 +67,7 @@
     "id": "components-showcase",
     "name": "Component Showcase",
     "type": "ui",
+    "tier": 0,
     "description": "UI primitives and domain component showcase. Adds a Components page and sidebar nav item.",
     "longDescription": "## Component Showcase\n\nAdds a **Components** page (`/p/components`) to the Kleff panel and a matching sidebar nav item.\n\nShowcases all Kleff UI primitives and domain components — buttons, badges, cards, charts, toasts, and more — useful for plugin development and design review.",
     "tags": [
@@ -91,6 +93,7 @@
     "id": "idp-keycloak",
     "name": "Keycloak",
     "type": "idp",
+    "tier": 2,
     "description": "Red Hat Keycloak identity provider. SSO, MFA, and self-hosted user management.",
     "longDescription": "## Keycloak Identity Provider\n\nKleff deploys and manages a Keycloak container automatically. No configuration required.\n\n### Features\n- Bundled Keycloak container (no external setup needed)\n- SSO and MFA via Keycloak\n- User registration via Keycloak Admin REST API\n- RS256 JWT verification via JWKS endpoint\n\n### Setup\nClick Install & Activate. Kleff will start Keycloak, configure the realm, and set up an admin user automatically.",
     "tags": [
