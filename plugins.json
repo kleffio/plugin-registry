@@ -168,5 +168,380 @@
         "internalAddr": "http://keycloak:8080"
       }
     ]
+  },
+  {
+    "id": "loki-plugin",
+    "name": "Loki",
+    "type": "observability",
+    "tier": 2,
+    "description": "Log aggregation backend. Receives workload logs from the platform via gRPC and stores them in Grafana Loki.",
+    "longDescription": "Deploys a gRPC wrapper alongside a Loki container. The platform forwards workload log entries via IngestLog gRPC calls; the wrapper writes them to Loki using the Loki push API.\n\nExposes a LogQL-compatible query endpoint at http://loki:3100 for Grafana and other visualizers.",
+    "tags": ["observability", "logs", "loki", "grafana", "logging"],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/loki-plugin",
+    "image": "ghcr.io/kleffio/logs-loki",
+    "version": "0.1.0",
+    "license": "MIT",
+    "verified": true,
+    "capabilities": ["monitoring.logs"],
+    "output": {
+      "protocol": "loki_push",
+      "path": "/loki/api/v1/push"
+    },
+    "query": {
+      "url": "http://kleff-loki-plugin:8080",
+      "path": "/logs"
+    },
+    "companions": [
+      {
+        "id": "loki",
+        "image": "grafana/loki:3.0.0",
+        "command": ["-config.file=/etc/loki/local-config.yaml"],
+        "ports": [{ "container": 3100, "host": 3100 }],
+        "volumes": [{ "name": "kleff-loki-data", "target": "/loki" }],
+        "internalAddr": "http://loki:3100",
+        "skipIfEnv": "LOKI_URL"
+      }
+    ],
+    "config": [
+      {
+        "key": "LOKI_URL",
+        "label": "Loki URL",
+        "description": "Override to use an external Loki instance. Leave blank to use the bundled companion.",
+        "type": "url",
+        "required": false,
+        "advanced": true
+      }
+    ]
+  },
+  {
+    "id": "tempo-plugin",
+    "name": "Tempo",
+    "type": "observability",
+    "tier": 2,
+    "description": "Distributed tracing backend. Receives trace spans from the platform via gRPC and stores them in Grafana Tempo.",
+    "longDescription": "Deploys a gRPC wrapper alongside a Tempo container. The platform forwards trace spans via IngestSpan gRPC calls; the wrapper writes them to Tempo using the Zipkin push API.\n\nExposes a TraceQL-compatible query endpoint at http://tempo:3200 for Grafana and other visualizers.",
+    "tags": ["observability", "traces", "tempo", "grafana", "tracing", "opentelemetry"],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/tempo-plugin",
+    "image": "ghcr.io/kleffio/traces-tempo",
+    "version": "0.1.0",
+    "license": "MIT",
+    "verified": true,
+    "capabilities": ["monitoring.traces"],
+    "companions": [
+      {
+        "id": "tempo",
+        "image": "grafana/tempo:2.5.0",
+        "command": ["-config.file=/etc/tempo.yaml"],
+        "ports": [
+          { "container": 3200, "host": 3200 },
+          { "container": 9411, "host": 9411 }
+        ],
+        "volumes": [{ "name": "kleff-tempo-data", "target": "/var/tempo" }],
+        "internalAddr": "http://tempo:9411",
+        "skipIfEnv": "TEMPO_URL"
+      }
+    ],
+    "config": [
+      {
+        "key": "TEMPO_URL",
+        "label": "Tempo Zipkin URL",
+        "description": "Override to use an external Tempo instance (Zipkin endpoint). Leave blank to use the bundled companion.",
+        "type": "url",
+        "required": false,
+        "advanced": true
+      }
+    ]
+  },
+  {
+    "id": "victoriametrics-plugin",
+    "name": "VictoriaMetrics",
+    "type": "observability",
+    "tier": 2,
+    "description": "Time-series metrics backend. Receives workload metrics from the platform via gRPC and stores them in VictoriaMetrics.",
+    "longDescription": "Deploys a gRPC wrapper alongside a VictoriaMetrics container. The platform forwards workload metric samples via IngestMetrics gRPC calls; the wrapper writes them to VictoriaMetrics using the Prometheus import API.\n\nExposes a PromQL-compatible query endpoint at http://victoriametrics:8428 for Grafana and other visualizers.",
+    "tags": ["observability", "metrics", "victoriametrics", "prometheus", "timeseries"],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/victoriametrics-plugin",
+    "image": "ghcr.io/kleffio/metrics-victoriametrics",
+    "version": "0.1.0",
+    "license": "MIT",
+    "verified": true,
+    "capabilities": ["monitoring.metrics"],
+    "output": {
+      "protocol": "remote_write",
+      "path": "/api/v1/write"
+    },
+    "companions": [
+      {
+        "id": "victoriametrics",
+        "image": "victoriametrics/victoria-metrics:v1.99.0",
+        "command": ["-retentionPeriod=12", "-storageDataPath=/victoria-metrics-data"],
+        "ports": [{ "container": 8428, "host": 8428 }],
+        "volumes": [{ "name": "kleff-victoriametrics-data", "target": "/victoria-metrics-data" }],
+        "internalAddr": "http://victoriametrics:8428",
+        "skipIfEnv": "VICTORIA_METRICS_URL"
+      }
+    ],
+    "config": [
+      {
+        "key": "VICTORIA_METRICS_URL",
+        "label": "VictoriaMetrics URL",
+        "description": "Override to use an external VictoriaMetrics instance. Leave blank to use the bundled companion.",
+        "type": "url",
+        "required": false,
+        "advanced": true
+      }
+    ]
+  },
+  {
+    "id": "alertmanager-alerting",
+    "name": "Alertmanager",
+    "type": "observability",
+    "tier": 1,
+    "description": "Prometheus Alertmanager — routes, deduplicates, and silences alerts from Prometheus-compatible sources.",
+    "longDescription": "Deploys the official Prometheus Alertmanager. Receives alerts from Alloy or Prometheus-compatible collectors and routes them to configured receivers (Slack, PagerDuty, email, webhooks).\n\nAccess the Alertmanager UI at http://localhost:9093.",
+    "tags": ["observability", "alerting", "prometheus", "alertmanager"],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/alertmanager-alerting",
+    "image": "ghcr.io/kleffio/alertmanager-alerting",
+    "version": "0.1.0",
+    "license": "Apache-2.0",
+    "verified": true,
+    "capabilities": ["monitoring.alerting"],
+    "ports": [
+      { "container": 9093, "host": 9093, "protocol": "tcp" }
+    ],
+    "volumes": [
+      { "name": "kleff-alertmanager-data", "target": "/alertmanager" }
+    ],
+    "config": [
+      {
+        "key": "KLEFF_PLATFORM_URL",
+        "label": "Platform URL",
+        "description": "Internal URL of the Kleff platform API. Auto-injected by the platform — only override if Alertmanager is not on the same Docker network.",
+        "type": "url",
+        "required": false,
+        "advanced": true
+      }
+    ]
+  },
+  {
+    "id": "alloy-collector",
+    "name": "Grafana Alloy",
+    "type": "observability",
+    "tier": 1,
+    "description": "Grafana Alloy — a flexible, high-performance telemetry collector for metrics, logs, and traces.",
+    "longDescription": "Deploys Grafana Alloy as the central telemetry collector. Alloy discovers scrape targets via the platform HTTP SD API, collects Prometheus metrics, and forwards them to the active monitoring.metrics backend (e.g. VictoriaMetrics).\n\nAlloy configuration is auto-generated from the platform's plugin discovery API at the KLEFF_PLATFORM_URL.",
+    "tags": ["observability", "collector", "metrics", "logs", "traces", "alloy", "grafana"],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/alloy-collector",
+    "image": "ghcr.io/kleffio/alloy-collector",
+    "version": "0.1.0",
+    "license": "Apache-2.0",
+    "verified": true,
+    "capabilities": ["monitoring.collector"],
+    "ports": [
+      { "container": 12345, "host": 12345, "protocol": "tcp" }
+    ],
+    "volumes": [
+      { "name": "kleff-alloy-data", "target": "/var/lib/alloy/data" },
+      { "hostPath": "/var/run/docker.sock", "target": "/var/run/docker.sock" }
+    ],
+    "config": [
+      {
+        "key": "KLEFF_PLATFORM_URL",
+        "label": "Platform URL",
+        "description": "Internal URL of the Kleff platform API. Auto-injected by the platform — only override if Alloy is not on the same Docker network.",
+        "type": "url",
+        "required": false,
+        "advanced": true
+      }
+    ]
+  },
+  {
+    "id": "grafana-visualizer",
+    "name": "Grafana",
+    "type": "observability",
+    "tier": 1,
+    "description": "Grafana dashboards pre-configured for Kleff observability plugins — visualize logs, traces, and metrics in one place.",
+    "longDescription": "Deploys Grafana with pre-provisioned datasources and dashboards for the Kleff observability stack.\n\nAutomatically connects to the active monitoring.logs (Loki), monitoring.traces (Tempo), and monitoring.metrics (VictoriaMetrics or InfluxDB) backends.\n\nAccess the Grafana UI at http://localhost:3000.",
+    "tags": ["observability", "dashboards", "grafana", "visualization", "metrics", "logs", "traces"],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/grafana-visualizer",
+    "image": "ghcr.io/kleffio/grafana-visualizer",
+    "version": "0.1.0",
+    "license": "AGPL-3.0",
+    "verified": true,
+    "capabilities": ["monitoring.visualizer"],
+    "ports": [
+      { "container": 3000, "host": 3000, "protocol": "tcp" }
+    ],
+    "volumes": [
+      { "name": "kleff-grafana-data", "target": "/var/lib/grafana" }
+    ],
+    "config": []
+  },
+  {
+    "id": "cadvisor-source",
+    "name": "cAdvisor",
+    "type": "observability",
+    "tier": 1,
+    "description": "Exports per-container resource usage metrics (CPU, memory, network, disk) for Prometheus scraping.",
+    "longDescription": "Runs Google cAdvisor alongside the Docker daemon to collect per-container CPU, memory, network, and filesystem metrics. Exposes them in Prometheus text format. Automatically discovered as a scrape target by the platform HTTP SD endpoint.",
+    "tags": ["observability", "metrics", "prometheus", "containers", "docker"],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/cadvisor-source",
+    "image": "gcr.io/cadvisor/cadvisor",
+    "version": "0.1.0",
+    "license": "Apache-2.0",
+    "verified": true,
+    "capabilities": ["monitoring.source", "monitoring.source.containers"],
+    "privileged": true,
+    "command": [
+      "--docker_only=true",
+      "--store_container_labels=true",
+      "--housekeeping_interval=10s",
+      "--disable_metrics=disk,diskIO,hugetlb,sched,tcp,udp,advtcp,cpuset,cpu_topology,referenced_memory,resctrl,memory_numa,process"
+    ],
+    "scrape": {
+      "port": 8080,
+      "path": "/metrics",
+      "scheme": "http"
+    },
+    "volumes": [
+      { "hostPath": "/", "target": "/rootfs", "readOnly": true },
+      { "hostPath": "/var/run", "target": "/var/run", "readOnly": false },
+      { "hostPath": "/sys", "target": "/sys", "readOnly": true },
+      { "hostPath": "/var/lib/docker", "target": "/var/lib/docker", "readOnly": true },
+      { "hostPath": "/dev/disk", "target": "/dev/disk", "readOnly": true }
+    ],
+    "config": []
+  },
+  {
+    "id": "influxdb-plugin",
+    "name": "InfluxDB",
+    "type": "observability",
+    "tier": 2,
+    "description": "Time-series metrics backend. Stores metrics from Alloy via Prometheus remote write.",
+    "longDescription": "Deploys InfluxDB 3 Core as a time-series metrics backend. Alloy writes metrics via the Prometheus remote write endpoint. Query data using InfluxQL or SQL in the InfluxDB UI at http://localhost:8181.",
+    "tags": ["observability", "metrics", "influxdb", "timeseries"],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/influxdb-plugin",
+    "image": "",
+    "version": "0.1.0",
+    "license": "MIT",
+    "verified": true,
+    "capabilities": ["monitoring.metrics"],
+    "output": {
+      "protocol": "remote_write",
+      "path": "/api/v1/prom/write?db=${INFLUXDB_DATABASE}",
+      "bearerToken": "${INFLUXDB_TOKEN}"
+    },
+    "companions": [
+      {
+        "id": "influxdb",
+        "image": "influxdb:3-core",
+        "command": ["influxdb3", "serve", "--node-id=node0", "--object-store=file", "--data-dir=/var/lib/influxdb3/data"],
+        "env": {
+          "INFLUXDB3_AUTH_TOKEN": "${INFLUXDB_TOKEN}"
+        },
+        "ports": [{ "container": 8181, "host": 8181 }],
+        "volumes": [{ "name": "kleff-influxdb-data", "target": "/var/lib/influxdb3/data" }],
+        "internalAddr": "http://influxdb:8181",
+        "skipIfEnv": "INFLUXDB_URL"
+      }
+    ],
+    "config": [
+      {
+        "key": "INFLUXDB_DATABASE",
+        "label": "Database",
+        "description": "InfluxDB database name. Created automatically on first write.",
+        "type": "string",
+        "required": true,
+        "default": "metrics"
+      },
+      {
+        "key": "INFLUXDB_TOKEN",
+        "label": "Admin Token",
+        "description": "InfluxDB admin token used by Alloy to write metrics. Set this to a strong secret.",
+        "type": "secret",
+        "required": true,
+        "default": "kleff-influxdb-token"
+      },
+      {
+        "key": "INFLUXDB_URL",
+        "label": "External InfluxDB URL",
+        "description": "Override to use an external InfluxDB 3 instance. Leave blank to use the bundled companion.",
+        "type": "url",
+        "required": false,
+        "advanced": true
+      }
+    ]
+  },
+  {
+    "id": "node-exporter-source",
+    "name": "Node Exporter",
+    "type": "observability",
+    "tier": 1,
+    "description": "Exposes host-level hardware and OS metrics for Prometheus/Alloy scraping.",
+    "longDescription": "Runs the official Prometheus node_exporter on each host. Exports CPU, memory, disk, filesystem, network, and load metrics in Prometheus text format. Alloy or any Prometheus-compatible collector will automatically discover this plugin as a scrape target via the platform HTTP SD endpoint.",
+    "tags": ["observability", "metrics", "prometheus", "node-exporter", "hardware"],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/node-exporter-source",
+    "image": "prom/node-exporter",
+    "version": "0.1.0",
+    "license": "Apache-2.0",
+    "verified": true,
+    "capabilities": ["monitoring.source", "monitoring.source.host"],
+    "scrape": {
+      "port": 9100,
+      "path": "/metrics",
+      "scheme": "http"
+    },
+    "volumes": [
+      { "hostPath": "/", "target": "/host", "readOnly": true }
+    ],
+    "command": ["--path.rootfs=/host"],
+    "config": []
+  },
+  {
+    "id": "slack-notification",
+    "name": "Slack Notifications",
+    "type": "observability",
+    "tier": 1,
+    "description": "Routes Alertmanager alerts to a Slack channel via an incoming webhook.",
+    "longDescription": "Registers a Slack incoming webhook URL with the platform so that Alertmanager (or any alerting plugin) can deliver alert notifications to your Slack workspace.\n\nNo container is deployed — the webhook URL is stored securely and injected into Alertmanager configuration at runtime.",
+    "tags": ["observability", "notifications", "slack", "alerting"],
+    "author": "Kleff",
+    "repo": "https://github.com/kleffio/slack-notification",
+    "image": "",
+    "version": "0.1.0",
+    "license": "MIT",
+    "verified": true,
+    "capabilities": ["monitoring.notification"],
+    "alertmanagerReceiver": {
+      "name": "slack",
+      "config": {
+        "slack_configs": [
+          {
+            "api_url": "${SLACK_WEBHOOK_URL}",
+            "send_resolved": true,
+            "title": "{{ .CommonAnnotations.summary }}",
+            "text": "{{ range .Alerts }}*{{ .Labels.alertname }}* ({{ .Labels.severity }}): {{ .Annotations.summary }}\n{{ end }}"
+          }
+        ]
+      }
+    },
+    "config": [
+      {
+        "key": "SLACK_WEBHOOK_URL",
+        "label": "Slack Incoming Webhook URL",
+        "description": "The Slack incoming webhook URL, e.g. https://hooks.slack.com/services/T.../B.../... — the channel is set when you create the webhook in Slack.",
+        "type": "secret",
+        "required": true
+      }
+    ]
   }
 ]
